@@ -1,57 +1,204 @@
-# Keywords in Python:
+Python Keywords in DevOps – Explained
 
-Keywords are reserved words in Python that have predefined meanings and cannot be used as variable names or identifiers. These words are used to define the structure and logic of the program. They are an integral part of the Python language and are case-sensitive, which means you must use them exactly as specified.
+This example demonstrates Python keywords using a realistic DevOps scenario involving server configuration, deployment, and monitoring. Each section explains the keyword in context.
 
-Here are some important Python keywords:
+1. Global Variables (global)
 
-1. **and**: It is a logical operator that returns `True` if both operands are true.
+Purpose: Share a variable across multiple functions.
 
-2. **or**: It is a logical operator that returns `True` if at least one of the operands is true.
+DevOps Example: server_status is a global variable storing whether the server is running or stopped.
 
-3. **not**: It is a logical operator that returns the opposite of the operand's truth value.
+Code Snippet:
 
-4. **if**: It is used to start a conditional statement and is followed by a condition that determines whether the code block is executed.
+global server_status
+server_status = "stopped"
 
-5. **else**: It is used in conjunction with `if` to define an alternative code block to execute when the `if` condition is `False`.
 
-6. **elif**: Short for "else if," it is used to check additional conditions after an `if` statement and is used in combination with `if` and `else`.
+Explanation: Allows start_server() and stop_server() functions to modify the same server status.
 
-7. **while**: It is used to create a loop that repeatedly executes a block of code as long as a specified condition is true.
+2. Functions (def, return)
 
-8. **for**: It is used to create a loop that iterates over a sequence (such as a list, tuple, or string) and executes a block of code for each item in the sequence.
+Purpose: Encapsulate logic into reusable blocks.
 
-9. **in**: Used with `for`, it checks if a value is present in a sequence.
+DevOps Example: start_server() and stop_server() manage server lifecycle.
 
-10. **try**: It is the beginning of a block of code that is subject to exception handling. It is followed by `except` to catch and handle exceptions.
+Code Snippet:
 
-11. **except**: Used with `try`, it defines a block of code to execute when an exception is raised in the corresponding `try` block.
+def start_server(server_name):
+    global server_status
+    if server_status == "running":
+        return False
+    server_status = "running"
+    return True
 
-12. **finally**: Used with `try`, it defines a block of code that is always executed, whether an exception is raised or not.
 
-13. **def**: It is used to define a function in Python.
+Explanation: Functions make DevOps operations reusable and modular.
 
-14. **return**: It is used within a function to specify the value that the function should return.
+3. Classes (class)
 
-15. **class**: It is used to define a class, which is a blueprint for creating objects in object-oriented programming.
+Purpose: Create structured objects with properties.
 
-16. **import**: It is used to import modules or libraries to access their functions, classes, or variables.
+DevOps Example: ServerConfig class stores server name, port, and HTTPS status.
 
-17. **from**: Used with `import` to specify which specific components from a module should be imported.
+Code Snippet:
 
-18. **as**: Used with `import` to create an alias for a module, making it easier to reference in the code.
+class ServerConfig:
+    def __init__(self, name, port, https_enabled):
+        self.name = name
+        self.port = port
+        self.https_enabled = https_enabled
 
-19. **True**: It represents a boolean value for "true."
 
-20. **False**: It represents a boolean value for "false."
+Explanation: Encapsulates server configurations as objects.
 
-21. **None**: It represents a special null value or absence of value.
+4. Conditional Statements (if, elif, else, and, or, not)
 
-22. **is**: It is used for identity comparison, checking if two variables refer to the same object in memory.
+Purpose: Make decisions based on conditions.
 
-23. **lambda**: It is used to create small, anonymous functions (lambda functions).
+DevOps Example: Check server HTTPS configuration.
 
-24. **with**: It is used for context management, ensuring that certain operations are performed before and after a block of code.
+Code Snippet:
 
-25. **global**: It is used to declare a global variable within a function's scope.
+if web_server.https_enabled and web_server.port == 443:
+    print("Secure server ready")
+elif web_server.https_enabled:
+    print("HTTPS enabled but non-standard port")
+else:
+    print("Server running without HTTPS")
 
-26. **nonlocal**: It is used to declare a variable as nonlocal, which allows modifying a variable in an enclosing (but non-global) scope.
+
+Explanation: Ensures safe and correct server configuration.
+
+5. Loops (for, while, in)
+
+Purpose: Iterate over sequences or repeat operations.
+
+DevOps Example: Loop through servers, retry operations until success.
+
+Code Snippet:
+
+servers = [web_server, db_server]
+for server in servers:
+    print(f"Checking {server.name}")
+
+retry = 3
+while retry > 0:
+    success = start_server(web_server.name)
+    if success:
+        break
+    retry -= 1
+
+
+Explanation: Automates repetitive DevOps tasks like server checks.
+
+6. Exception Handling (try, except, finally, with)
+
+Purpose: Handle errors gracefully and manage resources.
+
+DevOps Example: Load server config file, handle missing files.
+
+Code Snippet:
+
+try:
+    with open("server_config.txt", "r") as f:
+        config_data = f.read()
+except FileNotFoundError:
+    print("Config file missing, using defaults.")
+finally:
+    print("Server initialization complete.")
+
+
+Explanation: Guarantees that the server initialization always finishes, even if a file is missing.
+
+7. Module Handling (import, from, as)
+
+Purpose: Use external modules for added functionality.
+
+DevOps Example: Use math for calculations, datetime for timestamps.
+
+Code Snippet:
+
+import math as m
+from datetime import datetime
+print(datetime.now())
+print(m.sqrt(1000))
+
+
+Explanation: Reuses Python libraries for common DevOps tasks.
+
+8. Boolean Values (True, False, None)
+
+Purpose: Represent state or results.
+
+DevOps Example: Track deployment status.
+
+Code Snippet:
+
+is_deployed = True
+deployment_result = None
+deployment_result = "Success" if is_deployed else "Failed"
+
+
+Explanation: Provides clear status indicators for deployment scripts.
+
+9. Identity Comparison (is)
+
+Purpose: Check if two objects are identical in memory.
+
+DevOps Example: Verify if a deployment result has been recorded.
+
+Code Snippet:
+
+if deployment_result is None:
+    print("Deployment result not available yet.")
+
+
+Explanation: Ensures proper handling of uninitialized or missing results.
+
+10. Lambda Functions (lambda)
+
+Purpose: Create small, inline functions.
+
+DevOps Example: Calculate server load dynamically.
+
+Code Snippet:
+
+calculate_max_load = lambda users: users * 2
+print(calculate_max_load(500))
+
+
+Explanation: Quickly define reusable logic without creating a full function.
+
+11. Nonlocal Variables (nonlocal)
+
+Purpose: Modify variables in an enclosing function scope.
+
+DevOps Example: Track retry attempts across nested functions.
+
+Code Snippet:
+
+def outer_function():
+    retry_count = 0
+    def inner_function():
+        nonlocal retry_count
+        retry_count += 1
+        print(retry_count)
+    for _ in range(3):
+        inner_function()
+
+
+Explanation: Keeps state within nested DevOps operations like retries.
+
+✅ Summary
+
+This file demonstrates all key Python keywords in realistic DevOps operations:
+
+Server start/stop automation
+
+Configuration management
+
+Deployment status tracking
+
+File handling and error management
+
+Dynamic calculations for load and retries

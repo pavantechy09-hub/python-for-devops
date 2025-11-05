@@ -1,96 +1,118 @@
-# Understanding Variables in Python:
+"""
+DevOps Real-Time Example: Managing Web Server Configuration with Variables
 
-In Python, a variable is a named storage location used to store data. Variables are essential for programming as they allow us to work with data, manipulate it, and make our code more flexible and reusable. 
+This script demonstrates:
+1. Variables (global and local)
+2. Variable scope and lifetime
+3. Functions
+4. CLI arguments
+5. Environment variables
 
-#### Example:
+Use case: Updating and managing server configuration in a DevOps workflow.
+"""
 
-```python
-# Assigning a value to a variable
-my_variable = 42
+import os
+import sys
 
-# Accessing the value of a variable
-print(my_variable)  # Output: 42
-```
-
-### Variable Scope and Lifetime:
-
-**Variable Scope:** In Python, variables have different scopes, which determine where in the code the variable can be accessed. There are mainly two types of variable scopes:
-
-1. **Local Scope:** Variables defined within a function have local scope and are only accessible inside that function.
-   
-   ```python
-   def my_function():
-       x = 10  # Local variable
-       print(x)
-   
-   my_function()
-   print(x)  # This will raise an error since 'x' is not defined outside the function.
-   ```
-
-2. **Global Scope:** Variables defined outside of any function have global scope and can be accessed throughout the entire code.
-
-   ```python
-   y = 20  # Global variable
-
-   def another_function():
-       print(y)  # This will access the global variable 'y'
-
-   another_function()
-   print(y)  # This will print 20
-   ```
-
-**Variable Lifetime:** The lifetime of a variable is determined by when it is created and when it is destroyed or goes out of scope. Local variables exist only while the function is being executed, while global variables exist for the entire duration of the program.
-
-### Variable Naming Conventions and Best Practices:
-
-It's important to follow naming conventions and best practices for variables to write clean and maintainable code:
-
-- Variable names should be descriptive and indicate their purpose.
-- Use lowercase letters and separate words with underscores (snake_case) for variable names.
-- Avoid using reserved words (keywords) for variable names.
-- Choose meaningful names for variables.
-
-#### Example:
-
-```python
-# Good variable naming
-user_name = "John"
-total_items = 42
-
-# Avoid using reserved words
-class = "Python"  # Not recommended
-
-# Use meaningful names
-a = 10  # Less clear
-num_of_students = 10  # More descriptive
-```
-
-### Practice Exercises and Examples:
-
-#### Example: Using Variables to Store and Manipulate Configuration Data in a DevOps Context
-
-In a DevOps context, you often need to manage configuration data for various services or environments. Variables are essential for this purpose. Let's consider a scenario where we need to store and manipulate configuration data for a web server.
-
-```python
-# Define configuration variables for a web server
+# ===========================
+# 1. Global Variables
+# ===========================
+# These variables can be accessed anywhere in this file
 server_name = "my_server"
 port = 80
 is_https_enabled = True
 max_connections = 1000
 
-# Print the configuration
-print(f"Server Name: {server_name}")
-print(f"Port: {port}")
-print(f"HTTPS Enabled: {is_https_enabled}")
-print(f"Max Connections: {max_connections}")
+# ===========================
+# 2. Functions and Local Scope
+# ===========================
+def print_config():
+    """
+    Print the current server configuration.
+    Demonstrates accessing global variables.
+    """
+    print(f"Server Name: {server_name}")
+    print(f"Port: {port}")
+    print(f"HTTPS Enabled: {is_https_enabled}")
+    print(f"Max Connections: {max_connections}")
+    print("-" * 40)
 
-# Update configuration values
-port = 443
-is_https_enabled = False
+def update_config(new_port=None, enable_https=None, max_conn=None):
+    """
+    Update the server configuration.
+    Demonstrates local and global variables, and variable lifetime.
+    """
+    global port, is_https_enabled, max_connections  # Modify global variables
 
-# Print the updated configuration
-print(f"Updated Port: {port}")
-print(f"Updated HTTPS Enabled: {is_https_enabled}")
-```
+    # Local dictionary to track temporary updates
+    temp_changes = {}
 
-In this example, we use variables to store and manipulate configuration data for a web server. This allows us to easily update and manage the server's configuration in a DevOps context.
+    if new_port:
+        port = new_port
+        temp_changes['port'] = port
+    if enable_https is not None:
+        is_https_enabled = enable_https
+        temp_changes['https'] = is_https_enabled
+    if max_conn:
+        max_connections = max_conn
+        temp_changes['max_connections'] = max_connections
+
+    print(f"Temporary Updates (local variable): {temp_changes}")
+
+# ===========================
+# 3. Environment Variables
+# ===========================
+# Example: store sensitive info like passwords outside the code
+# Set in terminal:
+# Windows PowerShell: $env:SERVER_PASSWORD="joy123"
+# Linux/macOS: export SERVER_PASSWORD="joy123"
+
+server_password = os.getenv("SERVER_PASSWORD", "default_password")
+print(f"Server Password (from environment variable): {server_password}")
+print("-" * 40)
+
+# ===========================
+# 4. CLI Arguments
+# ===========================
+# Run this script with optional arguments:
+# python devops_variables.py 443 True 2000
+# Arguments: <port:int> <https:True/False> <max_connections:int>
+
+if len(sys.argv) > 1:
+    try:
+        cli_port = int(sys.argv[1])
+        cli_https = sys.argv[2].lower() == "true"
+        cli_max_conn = int(sys.argv[3])
+        print("Updating configuration from CLI arguments...")
+        update_config(new_port=cli_port, enable_https=cli_https, max_conn=cli_max_conn)
+    except IndexError:
+        print("Not all CLI arguments provided. Skipping CLI updates.")
+    except ValueError:
+        print("Invalid CLI arguments. Please provide: <port:int> <https:True/False> <max_connections:int>")
+
+# ===========================
+# 5. Print Final Configuration
+# ===========================
+print("Final Server Configuration:")
+print_config()
+
+# ===========================
+# 6. DevOps Function: Simulate Deployment
+# ===========================
+def deploy_service(service_name, instances=1):
+    """
+    Simulate deploying a service.
+    Demonstrates using variables and functions in DevOps workflows.
+    """
+    deployment_status = f"Deploying {instances} instance(s) of {service_name}..."
+    print(deployment_status)
+
+    # Local variable to track success
+    success = True
+    if success:
+        print(f"{service_name} deployed successfully!")
+    else:
+        print(f"{service_name} deployment failed.")
+
+# Deploy a sample service
+deploy_service("nginx", 3)
