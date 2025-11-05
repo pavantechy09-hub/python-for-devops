@@ -8,6 +8,7 @@ This script demonstrates:
 4. GitHub API integration to track active contributors.
 """
 
+
 import requests
 
 # -----------------------------
